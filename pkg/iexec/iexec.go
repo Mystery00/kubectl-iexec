@@ -71,6 +71,7 @@ func selectPod(pods []corev1.Pod, config Config) (corev1.Pod, error) {
 		Templates: templates,
 		IsVimMode: config.VimMode,
 		Stdout:    NoBellStdout,
+		Size:      9,
 	}
 
 	i, _, err := podsPrompt.Run()
