@@ -32,6 +32,7 @@ type Config struct {
 	PodFilter       string
 	ContainerFilter string
 	RemoteCmd       []string
+	FastMode        bool
 }
 
 type Iexec struct {
@@ -47,6 +48,7 @@ func NewIexec(restConfig *rest.Config, config *Config) *Iexec {
 		"Vim Mode":        config.VimMode,
 		"Naked":           config.Naked,
 		"Namespace":       config.Namespace,
+		"Fast Mode":       config.FastMode,
 	}).Debug("iexec config values...")
 
 	return &Iexec{restConfig: restConfig, config: config}
@@ -68,6 +70,7 @@ func selectPod(pods []corev1.Pod, config Config) (corev1.Pod, error) {
 		Items:     pods,
 		Templates: templates,
 		IsVimMode: config.VimMode,
+		Stdout:    NoBellStdout,
 	}
 
 	i, _, err := podsPrompt.Run()
@@ -94,6 +97,7 @@ func containerPrompt(containers []corev1.Container, config Config) (corev1.Conta
 		Items:     containers,
 		Templates: templates,
 		IsVimMode: config.VimMode,
+		Stdout:    NoBellStdout,
 	}
 
 	i, _, err := containersPrompt.Run()

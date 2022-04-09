@@ -7,7 +7,7 @@ import (
 )
 
 var podTemplate = &promptui.SelectTemplates{
-	Active:   fmt.Sprintf("Namespace: {{ .Namespace | blue }} | Pod: %s {{ .Name | cyan }}", promptui.IconSelect),
+	Active:   fmt.Sprintf("Namespace: {{ .Namespace | cyan }} | Pod: %s {{ .Name | cyan }}", promptui.IconSelect),
 	Inactive: "Namespace: {{ .Namespace | blue }} | Pod: {{ .Name | magenta }}",
 	Selected: fmt.Sprintf("Namespace: {{ .Namespace | blue }} | Pod: %s {{ .Name | cyan }}", promptui.IconGood),
 }

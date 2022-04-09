@@ -52,6 +52,8 @@ type IExecOptions struct {
 	namespace       string
 	naked           bool
 	vimMode         bool
+	fastMode        bool
+	keepScreen      bool
 
 	genericclioptions.IOStreams
 }
@@ -92,6 +94,8 @@ func NewCmdIExec(streams genericclioptions.IOStreams) *cobra.Command {
 	cmd.PersistentFlags().StringVarP(&o.lvl, "log-level", "l", "", "log level (trace|debug|info|warn|error|fatal|panic)")
 	cmd.PersistentFlags().BoolVarP(&o.vimMode, "vim-mode", "v", false, "Vim Mode enabled")
 	cmd.PersistentFlags().BoolVarP(&o.naked, "naked", "x", false, "Decolorize output")
+	cmd.PersistentFlags().BoolVarP(&o.fastMode, "fast", "f", false, "Fast Mode enabled")
+	cmd.PersistentFlags().BoolVarP(&o.keepScreen, "keep", "k", false, "Keep Screen")
 	o.configFlags.AddFlags(cmd.Flags())
 
 	return cmd
@@ -155,7 +159,11 @@ func (o *IExecOptions) Run(args []string) error {
 		s := len(args)
 		o.remoteCmd = append(o.remoteCmd, args[1:s]...)
 	} else {
-		o.remoteCmd = []string{"/bin/sh"}
+		c := `clear;`
+		if o.keepScreen {
+			c = ``
+		}
+		o.remoteCmd = []string{`sh`, `-c`, fmt.Sprintf(`%s (bash || sh)`, c)}
 	}
 
 	config := &iexec.Config{
@@ -165,6 +173,7 @@ func (o *IExecOptions) Run(args []string) error {
 		PodFilter:       podFilter,
 		ContainerFilter: o.containerFilter,
 		RemoteCmd:       o.remoteCmd,
+		FastMode:        o.fastMode,
 	}
 
 	r := iexec.NewIexec(o.clientCfg, config)

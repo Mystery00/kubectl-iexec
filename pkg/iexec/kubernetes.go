@@ -60,6 +60,9 @@ func (r *Iexec) matchPods(pods *corev1.PodList) (corev1.PodList, error) {
 }
 
 func matchContainers(pod corev1.Pod, config Config) ([]corev1.Container, error) {
+	if config.FastMode {
+		config.ContainerFilter = config.PodFilter
+	}
 	if config.ContainerFilter == "" {
 		return pod.Spec.Containers, nil
 	}
@@ -79,6 +82,9 @@ func matchContainers(pod corev1.Pod, config Config) ([]corev1.Container, error) 
 	}
 
 	if len(matchingContainer) == 0 {
+		if config.FastMode {
+			return pod.Spec.Containers, nil
+		}
 		err := fmt.Errorf("no containers found for filter: %s", config.ContainerFilter)
 
 		return nil, err
