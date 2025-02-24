@@ -157,7 +157,7 @@ func (o *IExecOptions) Run(args []string) error {
 		s := len(args)
 		o.remoteCmd = append(o.remoteCmd, args[1:s]...)
 	} else {
-		o.remoteCmd = []string{"/bin/sh"}
+		o.remoteCmd = []string{"/bin/sh", "-c", "clear; (bash || ash || sh)"}
 	}
 
 	config := &iexec.Config{
